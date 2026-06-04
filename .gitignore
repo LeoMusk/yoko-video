@@ -1,0 +1,43 @@
+# 秘密
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Remotion
+node_modules/
+remotion/out/
+
+# 实验及产出物
+experiments/
+
+# 数据产物（按需开放给特定文件夹）
+data/m1.db
+data/m1.db-journal
+data/raw/*.jsonl
+data/scored/
+data/scored/*.jsonl
+out/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# 调研临时产物
+scripts/sources_status*.json

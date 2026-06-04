@@ -1,0 +1,329 @@
+[
+  {
+    "group": "Anthropic",
+    "name": "Anthropic news",
+    "candidates": [
+      {
+        "url": "https://www.anthropic.com/news/rss.xml",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 6026
+      },
+      {
+        "url": "https://www.anthropic.com/feed.xml",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 8098
+      },
+      {
+        "url": "https://www.anthropic.com/news.xml",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 2927
+      },
+      {
+        "url": "https://www.anthropic.com/news/feed",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 7675
+      },
+      {
+        "url": "https://anthropic.com/rss",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 12756
+      }
+    ]
+  },
+  {
+    "group": "MetaAI",
+    "name": "Meta AI Blog",
+    "candidates": [
+      {
+        "url": "https://ai.meta.com/blog/feed/",
+        "status": 400,
+        "err": "HTTPError 400",
+        "elapsed_ms": 2161
+      },
+      {
+        "url": "https://ai.meta.com/blog/rss.xml",
+        "status": null,
+        "err": "URLError: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)",
+        "elapsed_ms": 2098
+      },
+      {
+        "url": "https://ai.meta.com/feed/",
+        "status": 400,
+        "err": "HTTPError 400",
+        "elapsed_ms": 1784
+      },
+      {
+        "url": "https://about.fb.com/news/category/research/feed/",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 2216
+      }
+    ]
+  },
+  {
+    "group": "MSR",
+    "name": "Microsoft Research (Chrome UA)",
+    "candidates": [
+      {
+        "url": "https://www.microsoft.com/en-us/research/feed/",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 2893,
+        "bozo": false,
+        "entries": 10,
+        "feed_title": "Microsoft Research",
+        "latest_title": "MagenticLite, MagenticBrain, Fara1.5: An agentic experience optimized for small ",
+        "latest_date": "2026-05-21T17:00:00+00:00",
+        "days_since": 5.8
+      },
+      {
+        "url": "https://www.microsoft.com/en-us/research/blog/feed/",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 1932,
+        "bozo": false,
+        "entries": 10,
+        "feed_title": "Microsoft Research Blog - Microsoft Research",
+        "latest_title": "MagenticLite, MagenticBrain, Fara1.5: An agentic experience optimized for small ",
+        "latest_date": "2026-05-21T17:00:00+00:00",
+        "days_since": 5.8
+      }
+    ]
+  },
+  {
+    "group": "TheBatch",
+    "name": "The Batch",
+    "candidates": [
+      {
+        "url": "https://www.deeplearning.ai/the-batch/feed/",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 5053
+      },
+      {
+        "url": "https://www.deeplearning.ai/the-batch/rss/",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 2837
+      },
+      {
+        "url": "https://read.deeplearning.ai/the-batch/feed",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 4219
+      },
+      {
+        "url": "https://www.deeplearning.ai/feed/",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 3614
+      },
+      {
+        "url": "https://blog.deeplearning.ai/feed",
+        "status": null,
+        "err": "URLError: _ssl.c:983: The handshake operation timed out",
+        "elapsed_ms": 18211
+      }
+    ]
+  },
+  {
+    "group": "BensBites",
+    "name": "Ben's Bites",
+    "candidates": [
+      {
+        "url": "https://bensbites.beehiiv.com/feed",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 1527
+      },
+      {
+        "url": "https://news.bensbites.com/feed",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 7654,
+        "bozo": true,
+        "entries": 0,
+        "feed_title": ""
+      },
+      {
+        "url": "https://bensbites.com/feed",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 5164,
+        "bozo": false,
+        "entries": 20,
+        "feed_title": "Ben's Bites",
+        "latest_title": "Is SaaS dead?",
+        "latest_date": "2026-05-26T13:10:52+00:00",
+        "days_since": 1.0
+      },
+      {
+        "url": "https://bensbites.substack.com/feed",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 6257,
+        "bozo": false,
+        "entries": 20,
+        "feed_title": "Ben's Bites",
+        "latest_title": "Is SaaS dead?",
+        "latest_date": "2026-05-26T13:10:52+00:00",
+        "days_since": 1.0
+      }
+    ]
+  },
+  {
+    "group": "JiQiZhiXin",
+    "name": "机器之心",
+    "candidates": [
+      {
+        "url": "https://www.jiqizhixin.com/rss",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 220,
+        "bozo": true,
+        "entries": 0,
+        "feed_title": ""
+      },
+      {
+        "url": "https://www.jiqizhixin.com/rss/all",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 132
+      },
+      {
+        "url": "https://www.jiqizhixin.com/feed",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 81,
+        "bozo": true,
+        "entries": 0,
+        "feed_title": ""
+      },
+      {
+        "url": "https://www.jiqizhixin.com/feeds",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 93,
+        "bozo": true,
+        "entries": 0,
+        "feed_title": ""
+      }
+    ]
+  },
+  {
+    "group": "RSSHub-36kr",
+    "name": "RSSHub 公共 36kr (Chrome UA)",
+    "candidates": [
+      {
+        "url": "https://rsshub.app/36kr/news/latest",
+        "status": null,
+        "err": "URLError: _ssl.c:983: The handshake operation timed out",
+        "elapsed_ms": 15005
+      },
+      {
+        "url": "https://rsshub.rssforever.com/36kr/news/latest",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 5569,
+        "bozo": false,
+        "entries": 30,
+        "feed_title": "36氪 - 最新资讯频道",
+        "latest_title": "叶国富炒股，浮盈8.7亿",
+        "latest_date": "2026-05-27T13:05:56+00:00",
+        "days_since": 0.0
+      }
+    ]
+  },
+  {
+    "group": "Extra",
+    "name": "Smol AI News (AINews)",
+    "candidates": [
+      {
+        "url": "https://buttondown.email/ainews/rss",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 5148,
+        "bozo": false,
+        "entries": 10,
+        "feed_title": "AI News (MOVED TO news.smol.ai!)",
+        "latest_title": "[AINews] We have moved!! Please help us move!",
+        "latest_date": "2025-04-25T03:14:18+00:00",
+        "days_since": 397.4
+      },
+      {
+        "url": "https://news.smol.ai/rss",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 1769
+      }
+    ]
+  },
+  {
+    "group": "Extra",
+    "name": "Sequoia Capital Perspectives",
+    "candidates": [
+      {
+        "url": "https://www.sequoiacap.com/feed/",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 6477,
+        "bozo": false,
+        "entries": 10,
+        "feed_title": "Sequoia Capital",
+        "latest_title": "All Systems Nominal – Nominal Spotlight",
+        "latest_date": "2026-05-21T15:35:44+00:00",
+        "days_since": 5.9
+      }
+    ]
+  },
+  {
+    "group": "Extra",
+    "name": "a16z (Andreessen Horowitz)",
+    "candidates": [
+      {
+        "url": "https://a16z.com/feed/",
+        "status": 404,
+        "err": "HTTPError 404",
+        "elapsed_ms": 1554
+      }
+    ]
+  },
+  {
+    "group": "Extra",
+    "name": "Simon Willison's Weblog",
+    "candidates": [
+      {
+        "url": "https://simonwillison.net/atom/everything/",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 2270,
+        "bozo": false,
+        "entries": 30,
+        "feed_title": "Simon Willison's Weblog",
+        "latest_title": "Quoting Kyle Ferrana",
+        "latest_date": "2026-05-27T06:41:43+00:00",
+        "days_since": 0.3
+      }
+    ]
+  },
+  {
+    "group": "Extra",
+    "name": "Hugging Face Papers (no native RSS, just check page)",
+    "candidates": [
+      {
+        "url": "https://huggingface.co/papers",
+        "status": 200,
+        "err": "",
+        "elapsed_ms": 4129,
+        "bozo": true,
+        "entries": 0,
+        "feed_title": ""
+      }
+    ]
+  }
+]

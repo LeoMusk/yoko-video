@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent Video Cut"
+  short_description: "Agent-planned Hyperframes short clips"
+  default_prompt: "Use $agent-video-cut to turn this source video into a polished vertical short clip."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,21 @@
+{
+  "name": "yoko-video-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "yoko-video M4 视频化：把 M3 脚本渲染成 9:16 短视频",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.468",
+    "@remotion/google-fonts": "^4.0.468",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.468"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.15",
+    "typescript": "^6.0.3"
+  }
+}

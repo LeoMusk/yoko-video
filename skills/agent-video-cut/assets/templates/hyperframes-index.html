@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Video Cut</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #05070b;
+        font-family: sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        color: #fff;
+        background: #05070b;
+      }
+      .video-shell {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 930px;
+        overflow: hidden;
+        background: #000;
+      }
+      .video-shell video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 50%;
+      }
+      .video-vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(0,0,0,.08), transparent 52%, rgba(0,0,0,.55));
+      }
+      .top-label {
+        position: absolute;
+        left: 34px;
+        top: 28px;
+        padding: 12px 18px;
+        border: 1px solid rgba(248,250,252,.18);
+        border-radius: 999px;
+        background: rgba(5,7,11,.62);
+        color: #d1d5db;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .card-host {
+        position: absolute;
+        left: 0;
+        top: 760px;
+        width: 1080px;
+        height: 980px;
+        padding: 42px 48px;
+        pointer-events: none;
+        visibility: hidden;
+        opacity: 0;
+      }
+      .card {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        padding: 50px 54px 42px;
+        background: #0d1117;
+        border: 2px solid rgba(255,255,255,.12);
+      }
+      .card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 12px;
+        height: 100%;
+        background: var(--accent);
+      }
+      .kicker {
+        color: var(--accent);
+        font-size: 24px;
+        font-weight: 800;
+      }
+      .title {
+        margin: 32px 0 0;
+        font-size: 84px;
+        line-height: 1.08;
+        font-weight: 900;
+      }
+      .mark { color: var(--accent); }
+      .detail {
+        margin: 34px 0 0;
+        color: #d7dde8;
+        font-size: 43px;
+        line-height: 1.42;
+        font-weight: 700;
+      }
+      .bottom-safe {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 10px;
+        background: linear-gradient(90deg, #76ff03, #ff2e88, #60a5fa);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="agent-video-cut"
+      data-start="0"
+      data-duration="29"
+      data-fps="30"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div class="video-shell">
+        <video
+          id="source-video"
+          class="clip"
+          src="assets/source.mp4"
+          data-start="0"
+          data-duration="29"
+          data-track-index="1"
+          data-has-audio="true"
+          data-layout-allow-overflow
+          playsinline
+        ></video>
+        <div class="video-vignette"></div>
+        <div class="top-label">SOURCE · SHORT CUT</div>
+      </div>
+
+      <section
+        class="card-host clip"
+        data-card-id="card-01"
+        data-start="3"
+        data-duration="6"
+        data-track-index="2"
+        style="--accent:#76ff03;"
+      >
+        <div class="card">
+          <div class="kicker">核心变化</div>
+          <h2 class="title">从“问 AI”<br />到<span class="mark">“派 AI”</span></h2>
+          <p class="detail">把这里替换成当前视频的核心观点。</p>
+        </div>
+      </section>
+
+      <div class="bottom-safe"></div>
+
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const tl = window.gsap.timeline({ paused: true });
+
+          function show(sel, start, end) {
+            tl.set(sel, { visibility: "visible" }, start);
+            tl.fromTo(sel, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }, start);
+            tl.to(sel, { opacity: 0, y: -18, duration: 0.28, ease: "power2.in" }, end - 0.28);
+            tl.set(sel, { visibility: "hidden" }, end);
+          }
+
+          show('.card-host[data-card-id="card-01"]', 3, 9);
+          tl.to("#source-video", { scale: 1.04, duration: 26, ease: "none" }, 3);
+
+          window.__timelines = window.__timelines || {};
+          window.__timelines["agent-video-cut"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>

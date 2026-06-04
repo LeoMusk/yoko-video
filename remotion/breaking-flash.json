@@ -1,0 +1,12 @@
+{
+  "image_file": "wechat-agent-news.png",
+  "badge": "速报",
+  "headline_lines": [
+    "微信要内置 AI Agent 了",
+    "腾讯官方做 · 不是插件",
+    "私域重复操作 快有人替了"
+  ],
+  "ticker_text": "腾讯股价单日暴涨 10.5%  ·  Q3 正式上线  ·  覆盖 14 亿微信用户",
+  "source": "Financial Times · 2026.06.02",
+  "voiceover": "微信要原生内置 AI Agent 了。腾讯官方做的，直接嵌在主界面——不是插件，不用担心封号。Q3 正式上线，AI 可以帮你在微信里自动操控小程序、跟进客户。做私域的，你们最头疼的那些重复操作，快有人替了。"
+}
