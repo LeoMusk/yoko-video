@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import re
 import sys
@@ -23,6 +24,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
+from urllib.parse import urlparse
 
 from .env import load_dotenv
 from .llm import DeepSeekClient, extract_content, usage_of
@@ -99,6 +101,19 @@ def load_existing_scores(date: str) -> dict[str, dict[str, Any]]:
 
 _ARXIV_ID_RE = re.compile(r"arxiv\.org/abs/(\d{4}\.\d{4,6})")
 _NORM_TITLE_RE = re.compile(r"[^\w]+", re.UNICODE)  # \w 已覆盖 CJK
+_WORD_RE = re.compile(r"[a-z0-9][a-z0-9._+-]{2,}", re.IGNORECASE)
+_URL_TOKEN_RE = re.compile(r"https?://[^/\s]+/([^\s?#]+)")
+
+_EVENT_STOPWORDS = {
+    "about", "after", "agent", "agents", "amazon", "and", "are",
+    "article", "audio", "based", "best", "blog", "build", "building",
+    "comments", "company", "data", "deepmind", "from", "google", "government",
+    "have", "here", "into", "latest", "model", "models", "news", "official",
+    "openai", "over", "podcast", "release", "released", "report", "says",
+    "statement", "this", "through", "using", "with", "http", "https", "www",
+    "com", "net", "org", "jun", "june", "rss", "traffic", "megaphone",
+    "pscrb", "simonwillison",
+}
 
 
 def _normalize_title(t: str) -> str:
@@ -144,6 +159,126 @@ def preprocess_dedup(items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
         kept.append(it)
 
     return kept, {"arxiv_collapsed": arxiv_collapsed, "title_collapsed": title_collapsed}
+
+
+def _canonical_url(url: str) -> str:
+    """Drop tracking query/fragment for duplicate comparison."""
+    if not url:
+        return ""
+    base = url.split("#", 1)[0]
+    if "?" not in base:
+        return base.rstrip("/")
+    path, query = base.split("?", 1)
+    kept_params = []
+    for param in query.split("&"):
+        key = param.split("=", 1)[0].lower()
+        if key.startswith("utm_") or key in {"st", "reflink", "share", "ref", "f"}:
+            continue
+        kept_params.append(param)
+    return (path + ("?" + "&".join(kept_params) if kept_params else "")).rstrip("/")
+
+
+def _is_homepage_url(url: str) -> bool:
+    if not url:
+        return False
+    parsed = urlparse(url)
+    return (parsed.path or "/") == "/"
+
+
+def _event_surface_text(it: dict[str, Any]) -> str:
+    s = it.get("scores") or {}
+    return " ".join(
+        str(x or "")
+        for x in (
+            it.get("title"),
+            it.get("url"),
+            s.get("one_liner"),
+            s.get("chinese_angle"),
+        )
+    )
+
+
+def _normalize_event_token(token: str) -> str:
+    token = token.strip("._+-").lower()
+    if len(token) > 5 and token.endswith("ing"):
+        token = token[:-3]
+    elif len(token) > 5 and token.endswith("ed"):
+        token = token[:-2]
+    elif len(token) > 4 and token.endswith("s"):
+        token = token[:-1]
+    return token
+
+
+def _event_tokens(it: dict[str, Any]) -> set[str]:
+    text = _event_surface_text(it).lower()
+    text_without_urls = re.sub(r"https?://\S+", " ", text)
+    raw_tokens = (_normalize_event_token(t) for t in _WORD_RE.findall(text_without_urls))
+    tokens = {
+        t
+        for t in raw_tokens
+        if len(t) >= 3 and not t.isdigit() and t not in _EVENT_STOPWORDS
+    }
+    for path in _URL_TOKEN_RE.findall(text):
+        for part in re.split(r"[^a-z0-9]+", path.lower()):
+            if len(part) >= 4 and part not in _EVENT_STOPWORDS:
+                tokens.add(part)
+    return tokens
+
+
+def _same_event(a: dict[str, Any], b: dict[str, Any], a_tokens: set[str], b_tokens: set[str]) -> bool:
+    a_url = a.get("url", "")
+    b_url = b.get("url", "")
+    if (
+        _canonical_url(a_url)
+        and _canonical_url(a_url) == _canonical_url(b_url)
+        and not _is_homepage_url(a_url)
+    ):
+        return True
+
+    ta = _normalize_title(a.get("title") or "")
+    tb = _normalize_title(b.get("title") or "")
+    if ta and tb and difflib.SequenceMatcher(None, ta, tb).ratio() >= 0.86:
+        return True
+
+    if a.get("source") == b.get("source"):
+        return False
+
+    if not a_tokens or not b_tokens:
+        return False
+    overlap = len(a_tokens & b_tokens)
+    union = len(a_tokens | b_tokens)
+    jaccard = overlap / max(1, union)
+    return overlap >= 4 and jaccard >= 0.30
+
+
+def cluster_scored_items(scored_items: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Group different sources covering the same event for brief rendering."""
+    # 只聚合有实质得分的条目（final=0 即非AI/广告，不进入简报）
+    keep = [it for it in scored_items if it.get("scores") and it["scores"].get("final", 0) > 0]
+    keep.sort(key=lambda it: it["scores"]["final"], reverse=True)
+
+    clusters: list[list[dict[str, Any]]] = []
+    cluster_tokens: list[set[str]] = []
+
+    for it in keep:
+        tokens = _event_tokens(it)
+        placed = False
+
+        for idx, cluster in enumerate(clusters):
+            if any(_same_event(it, existing, tokens, _event_tokens(existing)) for existing in cluster):
+                cluster.append(it)
+                cluster_tokens[idx] |= tokens
+                placed = True
+                break
+
+        if not placed:
+            clusters.append([it])
+            cluster_tokens.append(tokens)
+
+    for cluster in clusters:
+        cluster.sort(key=lambda it: it["scores"]["final"], reverse=True)
+    clusters.sort(key=lambda c: c[0]["scores"]["final"], reverse=True)
+    return clusters
 
 
 # ---------- LLM batch ----------
@@ -198,12 +333,15 @@ def chunk(lst: list[Any], n: int) -> Iterable[list[Any]]:
 
 def render_brief(date: str, scored_items: list[dict[str, Any]], top_n: int) -> str:
     keep = [it for it in scored_items if it.get("scores")]
-    keep.sort(key=lambda it: it["scores"]["final"], reverse=True)
-    top = keep[:top_n]
+    clusters = cluster_scored_items(scored_items)
+    top_clusters = clusters[:top_n]
 
     lines: list[str] = []
     lines.append(f"# 选题简报 — {date}\n")
-    lines.append(f"原始条目数：{len(scored_items)}；评分成功：{len(keep)}；展示前 {len(top)} 条。\n")
+    lines.append(
+        f"原始条目数：{len(scored_items)}；评分成功：{len(keep)}；"
+        f"聚合事件数：{len(clusters)}；展示前 {len(top_clusters)} 个事件。\n"
+    )
 
     # 类别统计
     from collections import Counter
@@ -215,9 +353,10 @@ def render_brief(date: str, scored_items: list[dict[str, Any]], top_n: int) -> s
     lines.append(f"- 检出广告/PR: {ad_count}")
     lines.append("")
 
-    lines.append(f"## Top {len(top)} 选题候选")
+    lines.append(f"## Top {len(top_clusters)} 选题候选")
     lines.append("")
-    for i, it in enumerate(top, 1):
+    for i, cluster in enumerate(top_clusters, 1):
+        it = cluster[0]
         s = it["scores"]
         title = it.get("title", "").strip()
         url = it.get("url", "")
@@ -229,9 +368,23 @@ def render_brief(date: str, scored_items: list[dict[str, Any]], top_n: int) -> s
             f"(imp={s['importance']} / video={s['video_fit']} / aud={s['audience_fit']}) "
             f"· {src} · {pub}"
         )
+        if len(cluster) > 1:
+            sources = ", ".join(dict.fromkeys(str(x.get("source", "")) for x in cluster if x.get("source")))
+            lines.append(f"- 聚合：{len(cluster)} 条相关资讯 · 来源：{sources}")
         lines.append(f"- 核心：{s['one_liner']}")
         lines.append(f"- 角度：{s['chinese_angle']}")
         lines.append(f"- 链接：{url}")
+        for related in cluster[1:6]:
+            rs = related["scores"]
+            rtitle = (related.get("title") or "").strip()
+            rsrc = related.get("source", "")
+            rpub = (related.get("published_at") or "")[:10]
+            rurl = related.get("url", "")
+            lines.append(
+                f"- 相关：{rsrc} · final={rs['final']:.1f} · {rpub} · {rtitle} · {rurl}"
+            )
+        if len(cluster) > 6:
+            lines.append(f"- 相关：另有 {len(cluster) - 6} 条同事件资讯未展开")
         lines.append("")
     return "\n".join(lines)
 
@@ -241,7 +394,7 @@ def render_brief(date: str, scored_items: list[dict[str, Any]], top_n: int) -> s
 def main(argv: list[str] | None = None) -> int:
     # 确保 print 在管道/后台模式下也实时刷新（不要被 block-buffer 卡住）
     try:
-        sys.stdout.reconfigure(line_buffering=True)
+        sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     except Exception:
         pass
 
@@ -251,6 +404,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--batch", type=int, default=DEFAULT_BATCH, help=f"批大小，默认 {DEFAULT_BATCH}")
     parser.add_argument("--model", default=DEFAULT_MODEL, help=f"模型名，默认 {DEFAULT_MODEL}")
     parser.add_argument("--top-n", type=int, default=TOP_N_FOR_BRIEF, help=f"简报展示前 N 条，默认 {TOP_N_FOR_BRIEF}")
+    parser.add_argument("--max-unscored", type=int,
+                        help="本轮最多评分 N 条未评分条目；用于每日批处理控制 token，未评分完的下次继续")
     parser.add_argument("--only-unscored", action="store_true",
                         help="只评估 scored JSONL 里还没有 scores 的条目（增量评分）")
     args = parser.parse_args(argv)
@@ -273,11 +428,23 @@ def main(argv: list[str] | None = None) -> int:
     if args.only_unscored:
         existing_scores = load_existing_scores(date)
         items_to_score = [it for it in items if it["id"] not in existing_scores]
+        total_unscored = len(items_to_score)
+        if args.max_unscored is not None:
+            if args.max_unscored <= 0:
+                print("--max-unscored 必须 > 0", file=sys.stderr)
+                return 2
+            items_to_score = items_to_score[: args.max_unscored]
         print(f"M2 score — date={date}, total={len(items)}, "
               f"already-scored={len(existing_scores)}, to-score={len(items_to_score)}, "
+              f"unscored-total={total_unscored}, "
               f"batch={args.batch}, model={args.model}")
     else:
         items_to_score = items
+        if args.max_unscored is not None:
+            if args.max_unscored <= 0:
+                print("--max-unscored 必须 > 0", file=sys.stderr)
+                return 2
+            items_to_score = items_to_score[: args.max_unscored]
         print(f"M2 score — date={date}, items={len(items_to_score)}, "
               f"batch={args.batch}, model={args.model}")
 

@@ -29,6 +29,9 @@ data/raw/*.jsonl
 data/scored/
 data/scored/*.jsonl
 out/
+data/*
+
+```jsonl
 
 # IDE
 .idea/

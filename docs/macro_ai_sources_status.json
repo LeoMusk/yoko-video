@@ -1,0 +1,238 @@
+[
+  {
+    "name": "census-btos-ai",
+    "tier": "DATA",
+    "kind": "macro-data",
+    "url": "https://www.census.gov/data/experimental-data-products/business-trends-and-outlook-survey.html",
+    "http_status": 200,
+    "error": "",
+    "title": "Business Trends and Outlook Survey (BTOS) Data",
+    "published_at": "2026-06-04T00:00:00+00:00",
+    "date_basis": "latest_page_date",
+    "body_bytes": 337708,
+    "content_hash": "1823361cfc53aa5d",
+    "matched_keywords": [
+      "Business Trends and Outlook Survey",
+      "Artificial Intelligence",
+      "AI Supplement"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 5020
+  },
+  {
+    "name": "census-ai-use-businesses",
+    "tier": "DATA",
+    "kind": "macro-data",
+    "url": "https://www.census.gov/library/stories/2026/05/ai-use-businesses.html",
+    "http_status": 200,
+    "error": "",
+    "title": "AI Use at U.S. Businesses",
+    "published_at": "2026-05-26T04:00:00+00:00",
+    "date_basis": "published_page_date",
+    "body_bytes": 349706,
+    "content_hash": "f75869a28b340cbc",
+    "matched_keywords": [
+      "AI Use at U.S. Businesses",
+      "BTOS",
+      "firm size"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 3764
+  },
+  {
+    "name": "ramp-ai-index",
+    "tier": "DATA",
+    "kind": "index",
+    "url": "https://ramp.com/data/ai-index",
+    "http_status": 200,
+    "error": "",
+    "title": "Ramp AI Index",
+    "published_at": "2026-06-05T21:07:47.560359+08:00",
+    "date_basis": "fetched_at",
+    "body_bytes": 1056691,
+    "content_hash": "aa8686b33bb93eb2",
+    "matched_keywords": [
+      "Ramp AI Index",
+      "adoption rate",
+      "American businesses"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 2917
+  },
+  {
+    "name": "fed-ai-adoption-monitor",
+    "tier": "DATA",
+    "kind": "macro-data",
+    "url": "https://www.federalreserve.gov/econres/notes/feds-notes/monitoring-ai-adoption-in-the-u-s-economy-20260403.html",
+    "http_status": 200,
+    "error": "",
+    "title": "The Fed - Monitoring AI Adoption in the US Economy",
+    "published_at": "2026-04-03T00:00:00+00:00",
+    "date_basis": "published_page_date",
+    "body_bytes": 124939,
+    "content_hash": "7eb77f5de00d2483",
+    "matched_keywords": [
+      "Monitoring AI Adoption",
+      "Business Trends and Outlook Survey",
+      "Survey of Business Uncertainty"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 2880
+  },
+  {
+    "name": "stanford-ai-index-economy",
+    "tier": "DATA",
+    "kind": "index",
+    "url": "https://hai.stanford.edu/ai-index/2026-ai-index-report/economy",
+    "http_status": 200,
+    "error": "",
+    "title": "Economy | The 2026 AI Index Report | Stanford HAI",
+    "published_at": null,
+    "date_basis": "missing",
+    "body_bytes": 1528231,
+    "content_hash": "e9e68b4b4704c59f",
+    "matched_keywords": [
+      "Organizational AI adoption",
+      "business function",
+      "Generative AI"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 8129
+  },
+  {
+    "name": "anthropic-economic-index",
+    "tier": "DATA",
+    "kind": "index",
+    "url": "https://www.anthropic.com/research/anthropic-economic-index-september-2025-report?lang=us",
+    "http_status": 200,
+    "error": "",
+    "title": "Anthropic Economic Index report: Uneven geographic and enterprise AI adoption \\ Anthropic",
+    "published_at": null,
+    "date_basis": "missing",
+    "body_bytes": 420681,
+    "content_hash": "86aabe1a40433b88",
+    "matched_keywords": [
+      "enterprise",
+      "API",
+      "adoption"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 3686
+  },
+  {
+    "name": "morgan-stanley-ai-adoption",
+    "tier": "DATA",
+    "kind": "report",
+    "url": "https://www.morganstanley.com/insights/articles/ai-adoption-accelerates-survey-find",
+    "http_status": 200,
+    "error": "",
+    "title": "AI Adoption Surges Driving Productivity Gains and Job Shifts | Morgan Stanley",
+    "published_at": null,
+    "date_basis": "missing",
+    "body_bytes": 123295,
+    "content_hash": "78a42f205e740e75",
+    "matched_keywords": [
+      "Morgan Stanley",
+      "productivity",
+      "survey"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 3172
+  },
+  {
+    "name": "deloitte-state-ai-enterprise",
+    "tier": "DATA",
+    "kind": "report",
+    "url": "https://www.deloitte.com/us/en/what-we-do/capabilities/applied-artificial-intelligence/content/state-of-ai-in-the-enterprise.html",
+    "http_status": 200,
+    "error": "",
+    "title": "The State of AI in the Enterprise - 2026 AI report | Deloitte US",
+    "published_at": null,
+    "date_basis": "missing",
+    "body_bytes": 397054,
+    "content_hash": "46c03fb3290be013",
+    "matched_keywords": [
+      "State of AI",
+      "Enterprise",
+      "Deloitte"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 4213
+  },
+  {
+    "name": "eurostat-enterprise-ai",
+    "tier": "DATA",
+    "kind": "macro-data",
+    "url": "https://ec.europa.eu/eurostat/web/products-eurostat-news/w/ddn-20251211-2",
+    "http_status": 200,
+    "error": "",
+    "title": "20% of EU enterprises use AI technologies - News articles - Eurostat",
+    "published_at": "2025-12-11T10:00:00+00:00",
+    "date_basis": "published_page_date",
+    "body_bytes": 196226,
+    "content_hash": "cae1450a7e7d3f06",
+    "matched_keywords": [
+      "EU enterprises",
+      "AI technologies",
+      "isoc_eb_ai"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 2285
+  },
+  {
+    "name": "oecd-ai-adoption-firms",
+    "tier": "DATA",
+    "kind": "macro-data",
+    "url": "https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/05/the-adoption-of-artificial-intelligence-in-firms_8fab986b/f9ef33c3-en.pdf",
+    "http_status": 200,
+    "error": "",
+    "title": "oecd-ai-adoption-firms",
+    "published_at": "2025-05-01T00:00:00+00:00",
+    "date_basis": "url_month",
+    "body_bytes": 4971260,
+    "content_hash": "e46444a0a5fdfe97",
+    "matched_keywords": [],
+    "missing_keywords": [],
+    "elapsed_ms": 3947
+  },
+  {
+    "name": "pwc-ai-performance-study",
+    "tier": "DATA",
+    "kind": "report",
+    "url": "https://www.pwc.com/gx/en/issues/technology/strong-foundations-trusted-ai.html",
+    "http_status": 200,
+    "error": "",
+    "title": "Strong foundations. Trusted AI. Real returns | PwC",
+    "published_at": "2026-06-01T00:00:00+00:00",
+    "date_basis": "published_page_date",
+    "body_bytes": 231727,
+    "content_hash": "743c7547a9ee2f8a",
+    "matched_keywords": [
+      "AI",
+      "CEO",
+      "value"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 2243
+  },
+  {
+    "name": "uk-dsit-ai-adoption-research",
+    "tier": "DATA",
+    "kind": "macro-data",
+    "url": "https://www.gov.uk/government/publications/ai-adoption-research/ai-adoption-research",
+    "http_status": 200,
+    "error": "",
+    "title": "AI Adoption Research - GOV.UK",
+    "published_at": "2026-01-28T00:01:04+00:00",
+    "date_basis": "published_page_date",
+    "body_bytes": 394421,
+    "content_hash": "38bb32ca38af1d3c",
+    "matched_keywords": [
+      "AI Adoption Research",
+      "3,500",
+      "businesses"
+    ],
+    "missing_keywords": [],
+    "elapsed_ms": 2406
+  }
+]

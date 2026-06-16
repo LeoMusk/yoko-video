@@ -7,12 +7,13 @@ $env:PYTHONIOENCODING = "utf-8"
 $env:PYTHONPATH = $proj
 Set-Location $proj
 
-Write-Host "=== [1/2] M1 信息采集（近 7 天，22 源）===" -ForegroundColor Cyan
+$sourceCount = python -c "from yoko_video.m1.sources import SOURCES; print(len(SOURCES))"
+Write-Host "=== [1/2] M1 信息采集（近 7 天，$sourceCount 源，含 DATA/watch 宏观源）===" -ForegroundColor Cyan
 python -m yoko_video.m1.collect --since-days 7
 
 Write-Host ""
-Write-Host "=== [2/2] M2 选题评分（增量，仅评新条目）===" -ForegroundColor Cyan
-python -m yoko_video.m2.score --only-unscored --top-n 40
+Write-Host "=== [2/2] M2 选题评分（增量，仅评新条目；本轮最多 120 条）===" -ForegroundColor Cyan
+python -m yoko_video.m2.score --only-unscored --max-unscored 120 --top-n 40
 
 # 当日 brief 用 UTC 日期命名（与 collect.py 一致）
 $today = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd")
