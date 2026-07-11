@@ -1,107 +1,164 @@
 # yoko-video
 
-**一句话目标**：把"一个人在 AI/科技中文赛道做内容的生产能力"放大 10 倍，通过短视频（抖音 / 视频号 / YouTube Shorts）为 AI 私域助理产品引流，并验证内容引擎本身的产品化潜力。
+把最近几天的 AI 行业资讯自动汇总成“可选题简报”，再生成短视频脚本。适合 AI/科技创作者每天筛选资讯、挑选选题，并让 Codex / Claude Code 等 Agent 辅助完成脚本和视频化。
 
----
+当前主链路：
 
-## 背景：为什么重启
-
-前序项目 `yoko-ai-content-engine` 在迭代中膨胀失控，复盘到的几个关键问题：
-
-1. **目标过宽**：定位为"商业化通用内容工厂"，但企业内容个性化太强，做不出通用工具
-2. **内容形态反复切换**：图文 → SVG → HTML/CSS → 视频，每次切换都重写大量代码
-3. **工程力量放错位置**：在视觉表达层（SVG/HTML 排版）耗费大量精力，但这不是用户价值的核心
-4. **信息源策略错误**：依赖 Web 搜索 + 网页抓取，得到的是被全网消费过的"已知信息"，没有信息差，自然也做不出有流量的内容
-
-## 这次的明确边界
-
-**只做**
-- 1 个赛道：**中文 AI / 科技**
-- 1 种内容形态：**短视频**
-- 1 个商业闭环：**短视频流量 → 私域 → AI 私域助理产品**（兼顾"项目本身成为可付费工具"的副线）
-
-**不做**
-- 不做通用内容引擎、不做多赛道适配
-- 不做长视频、图文、PPT 文件、文章等其他形态
-- 不自研视频生成（用 HeyGen / 腾讯智影 / 剪映智能成片等成熟 SaaS）
-- 不把 Web 搜索作为信息源
-- MVP 阶段不做发布自动化（手动发布）
-
-## 核心假设
-
-1. **中文 AI 内容存在天然信息差套利**：英文世界先发生 → 中文世界滞后 12-48 小时 → "海外优质信息 + 本地化解读"长期有需求
-2. **项目的真正 IP 是用户的内容品味与表达风格**，采集是 commodity，生成是工具
-3. **半自动 > 全自动**（在 MVP 阶段）：内容模式没稳定前，全自动只会放大噪音
-4. **视频生成不是项目核心难点**，所以不自研
-
-## 产品框架
-
-```
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│  M1 源采集    │ →  │ M2 过滤+选题  │ →  │ M3 脚本合成   │ →  │ M4 视频化    │
-│  RSS/API     │    │ LLM 重要性评分 │    │ 模板化 prompt │    │ 外部 SaaS    │
-└──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
-   工程：低           工程：中           工程：中           工程：低
-   价值：中           价值：极高         价值：极高         价值：高
-   差异化：弱         差异化：强(品味)   差异化：强(风格)   差异化：中
+```text
+M1 信息采集 -> M2 选题评分 -> M3 脚本生成 -> M4 视频化
 ```
 
-**项目的工程重心应该在 M2 + M3**——这两块沉淀的是"用户的判断力和表达风格"，是真正不可被替代的部分。M1 是采集管道，M4 是外部调用。
+## 3 分钟快速开始
 
-### 模块职责
+### 1. 安装依赖
 
-**M1 信息采集**
-- 输入：RSS feed 列表、API 配置、手动信源
-- 输出：每日 raw items（JSONL，含 source、time、title、url、content / excerpt）
-- 实现：尽可能 RSS。无 RSS 的源走官方 API 或第三方聚合（如 RSSHub 自建）
-- 明确不做：通用 Web 爬虫、实时流（轮询即可）
+需要 Python 3.10+。
 
-**M2 过滤 + 选题**
-- 输入：M1 的 raw items（每日数百到数千条）
-- 输出：每日"选题简报" markdown（约 10 条，按重要性排序，含一句话点评）
-- 实现：LLM 重要性评分 + 跨源去重 + 主题聚合
-- **关键**：评分 prompt 是项目 IP，需要持续迭代
+```powershell
+pip install -r requirements.txt
+```
 
-**M3 脚本合成**
-- 输入：用户从 M2 简报中挑选的 1-3 条选题
-- 输出：视频脚本草稿，覆盖 2 种格式：
-  - **A. 数字人口播稿**（60-180s，口播文案 + B-roll 关键词建议）
-  - **B. PPT 信息流稿**（30-90s，分镜文案 + 视觉关键词）
-- **关键**：风格模板需用用户已发视频做 few-shot，让 AI 学到本人表达风格
+如果要使用小红书 Markdown 转图工具，再安装可选依赖：
 
-**M4 视频化（外部 SaaS）**
-- 不写代码，直接调用：HeyGen / 腾讯智影 / 剪映智能成片
-- MVP 阶段：人工把脚本贴进去，等 M3 稳定后再考虑 API 自动化
+```powershell
+pip install -r requirements-optional.txt
+playwright install chromium
+```
 
-## MVP 计划（2-3 周）
+### 2. 配置 API Key
 
-### Week 1：M1 + M2 跑通
-- 接入 30-50 个 RSS 源（先筛选 → 见 `docs/sources-draft.md`）
-- 写第一版 LLM 重要性评分 prompt
-- 每天早上 8 点产出 markdown 选题简报
-- **验收**：用户每天看简报，能信任它替自己筛掉 80% 的噪音
+复制 `.env.example` 为 `.env`：
 
-### Week 2：M3 跑通 + 实测
-- 写 2 种脚本模板（数字人口播 + PPT 信息流），用用户已发视频做 few-shot
-- 用户挑选选题 → 调 M3 生成脚本 → 手动用 SaaS 做视频 → 发布
-- 目标：手动产出 5-10 条视频，分布在两种形态
-- **验收**：至少跑出 1 条流量明显高于该账号均值的视频
+```powershell
+Copy-Item .env.example .env
+```
 
-### Week 3：复盘 + 决策点
-- 跑出爆款 → 沉淀那条视频的"内容公式"为新模板，开始考虑 M4 自动化
-- 跑不出 → **不写更多代码**，回去调 M2（选题）和 M3（脚本）的 prompt
-- 大概率：M2 prompt 迭代是核心工作量，远超采集环节
+然后填入：
 
-## 工程倾向（待确认）
+```env
+DEEPSEEK_API_KEY=你的 DeepSeek API Key
+NEWS_SINCE_DAYS=3
+MAX_UNSCORED=120
+BRIEF_TOP_N=40
+SCRIPT_TOP=2
+```
 
-- 语言：Python（LLM 生态、prompt 调试方便）
-- LLM：Claude（已有 API）、可选 GPT-4o 做对照
-- 存储：本地 SQLite + JSONL 文件，MVP 阶段不引数据库
-- 调度：cron / Windows Task Scheduler，不用 Celery 等重型方案
-- 代码规模目标：MVP 控制在 1-2k 行 Python + 一组 prompt 文件，不写抽象层
+### 3. 配置你的账号风格
 
-## 下一步
+```powershell
+Copy-Item config\profile.example.json config\profile.json
+```
 
-1. 用户筛选 `docs/sources-draft.md` 中的源清单
-2. 对照 `docs/open-questions.md` 做信息源可行性深度调研（哪些 RSS 还活着、Twitter 怎么办、视频 SaaS 选型等）
-3. 上述两步完成后再开始写 M1 代码
+修改 `config/profile.json` 里的创作者名称、受众、CTA、语气样例。M2 选题评分和 M3 脚本生成都会读取它。
+
+### 4. 生成今日选题简报
+
+双击：
+
+```text
+run_news.bat
+```
+
+或命令行运行：
+
+```powershell
+python -m yoko_video.m1.collect --since-days 3
+python -m yoko_video.m2.score --only-unscored --max-unscored 120 --top-n 40
+```
+
+输出：
+
+```text
+data/scored/YYYY-MM-DD_brief.md
+data/scored/YYYY-MM-DD_scored.jsonl
+```
+
+### 5. 生成短视频脚本
+
+双击：
+
+```text
+run_script.bat
+```
+
+或手动指定选题：
+
+```powershell
+python -m yoko_video.m3.script --ids <选题id前缀>
+```
+
+输出：
+
+```text
+data/scripts/YYYY-MM-DD_scripts.md
+data/scripts/YYYY-MM-DD_scripts.json
+```
+
+### 6. 一键跑简报 + 脚本
+
+```text
+run_all.bat
+```
+
+## 常见使用场景
+
+- 只想每天看 AI 资讯：运行 `run_news.bat`，打开 `data/scored/*_brief.md`。
+- 想做视频：先看 brief 选题，再运行 `run_script.bat` 或 `python -m yoko_video.m3.script --ids <id>`。
+- 想控制成本：调低 `.env` 里的 `MAX_UNSCORED`。
+- 只看最近 2-3 天：设置 `.env` 里的 `NEWS_SINCE_DAYS=3`。
+- 想接入自己的信息源：编辑 `yoko_video/m1/sources.py`。
+- 想让 Agent 帮你做成片：看 `docs/AGENT_WORKFLOW.md`。
+
+## 产物说明
+
+详见 `docs/OUTPUTS.md`。核心文件：
+
+- `data/raw/*.jsonl`：采集到的原始资讯。
+- `data/scored/*_scored.jsonl`：加了 LLM 评分的结构化数据。
+- `data/scored/*_brief.md`：适合人看的每日选题简报。
+- `data/scripts/*_scripts.md`：可直接拍摄或交给视频工具的脚本。
+- `data/scripts/*_scripts.json`：给 Remotion / Agent 使用的结构化脚本。
+
+## 视频化
+
+目前推荐两种方式：
+
+1. 外部 SaaS：把 `data/scripts/*_scripts.md` 里的口播稿、画面建议粘到剪映、腾讯智影、HeyGen 等工具。
+2. Remotion 信息流：运行 `scripts/script_to_remotion_props.py` 把脚本转成 `remotion/props.json`，再用 Remotion 预览或渲染。
+
+详见 `docs/VIDEO_WORKFLOW.md`。
+
+## 开源安全说明
+
+这个仓库默认只提交示例配置和示例数据。你自己的 `.env`、`config/profile.json`、`data/`、`experiments/`、`out/` 和视频素材不应提交到公开仓库。
+
+公开发布前请按 `docs/OPEN_SOURCE_RELEASE.md` 做一次检查。
+
+## 给 Agent 的入口
+
+如果你用 Codex / Claude Code，请先让 Agent 读：
+
+- `AGENTS.md`
+- `docs/AGENT_WORKFLOW.md`
+- `docs/OUTPUTS.md`
+
+推荐任务：
+
+```text
+请读取今天的 data/scored/*_brief.md，挑出最值得做短视频的一条，核验事实，然后运行 M3 生成脚本，并把脚本改到适合口播。
+```
+
+## 项目文档
+
+- `docs/INSTALL.md`：安装说明。
+- `docs/USAGE.md`：M1/M2/M3/M4 用法。
+- `docs/OUTPUTS.md`：产物字段说明。
+- `docs/AGENT_WORKFLOW.md`：Agent 任务卡。
+- `docs/VIDEO_WORKFLOW.md`：视频化和 Remotion 桥接。
+- `docs/TROUBLESHOOTING.md`：常见问题。
+- `docs/OPEN_SOURCE_RELEASE.md`：开源前敏感信息检查清单。
+- `docs/WECHAT_OPEN_SOURCE_ARTICLE.md`：公众号文章草稿。
+
+## 注意
+
+LLM 生成的选题和脚本不能直接当事实发布。做视频前必须核验原文链接、公司名、产品名、关键数字和发布时间。

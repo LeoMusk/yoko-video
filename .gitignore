@@ -1,9 +1,13 @@
 # 秘密
 .env
+.env.*
+!.env.example
 .env.local
 .env.*.local
 *.key
 *.pem
+config/profile.json
+config/*.local.json
 
 # Python
 __pycache__/
@@ -18,24 +22,41 @@ venv/
 # Node / Remotion
 node_modules/
 remotion/out/
+remotion/public/*.png
+remotion/public/*.jpg
+remotion/public/*.jpeg
+remotion/public/*.webp
+remotion/public/*.mp4
+remotion/public/*.mov
+remotion/public/*.wav
+remotion/public/*.aac
+
+# 渲染/剪辑大文件
+*.mp4
+*.mov
+*.mkv
+*.m4v
+*.wav
+*.aac
+*.log
 
 # 实验及产出物
 experiments/
 
 # 数据产物（按需开放给特定文件夹）
-data/m1.db
-data/m1.db-journal
-data/raw/*.jsonl
+data/m1.db*
+data/raw/
 data/scored/
-data/scored/*.jsonl
+data/scripts/
+data/xhs/
+data/xhs_articles/
+data/analysis_frames/
 out/
-data/*
-
-```jsonl
 
 # IDE
 .idea/
 .vscode/
+.claude/
 *.swp
 
 # OS

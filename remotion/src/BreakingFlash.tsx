@@ -13,7 +13,7 @@ import {
 // 适合突发新闻/产品发布，配一张截图，区别于 YokoShort(数据卡片) 和 EditorialShort(杂志风)
 
 export interface BreakingFlashProps extends Record<string, unknown> {
-  // 静态文件名（放 remotion/public/），或留空使用默认
+  // 静态文件名（放 remotion/public/），留空时显示占位卡片
   image_file: string;
   // 顶部徽章，如 "速报"
   badge: string;
@@ -94,6 +94,53 @@ const ImageCard: React.FC<{at: number; src: string}> = ({at, src}) => {
           objectFit: "cover",
         }}
       />
+    </div>
+  );
+};
+
+const PlaceholderCard: React.FC<{at: number}> = ({at}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const s = spring({frame: frame - at, fps, config: {damping: 160, stiffness: 80}});
+  const scale = interpolate(s, [0, 1], [0.88, 1]);
+  const opacity = interpolate(s, [0, 1], [0, 1]);
+
+  return (
+    <div
+      style={{
+        opacity,
+        transform: `scale(${scale})`,
+        borderRadius: 28,
+        overflow: "hidden",
+        border: `3px solid ${GREEN}88`,
+        boxShadow: `0 0 50px ${GREEN}33`,
+        background: CARD_BG,
+        minHeight: 520,
+        padding: 44,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: 26,
+      }}
+    >
+      <div style={{color: GREEN, fontSize: 34, fontWeight: 900}}>
+        PUBLIC SAMPLE
+      </div>
+      <div
+        style={{
+          color: WHITE,
+          fontSize: 64,
+          fontWeight: 850,
+          lineHeight: 1.15,
+        }}
+      >
+        把 AI 新闻
+        <br />
+        变成短视频选题
+      </div>
+      <div style={{color: DIM, fontSize: 32, lineHeight: 1.38, fontWeight: 600}}>
+        替换 remotion/breaking-flash.json 或放入自己的截图素材。
+      </div>
     </div>
   );
 };
@@ -219,7 +266,11 @@ export const BreakingFlash: React.FC<BreakingFlashProps> = (props) => {
 
         {/* 图片卡片区 */}
         <div style={{marginBottom: 60}}>
-          <ImageCard at={8} src={staticFile(image_file)} />
+          {image_file ? (
+            <ImageCard at={8} src={staticFile(image_file)} />
+          ) : (
+            <PlaceholderCard at={8} />
+          )}
         </div>
 
         {/* 标题区：3 行逐步显示 */}

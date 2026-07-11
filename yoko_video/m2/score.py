@@ -28,7 +28,8 @@ from urllib.parse import urlparse
 
 from .env import load_dotenv
 from .llm import DeepSeekClient, extract_content, usage_of
-from .prompt import SYSTEM_PROMPT, build_user_message, CATEGORY_ENUM
+from ..profile import load_profile
+from .prompt import build_system_prompt, build_user_message, CATEGORY_ENUM
 
 
 RAW_DIR = Path("data/raw")
@@ -284,14 +285,14 @@ def cluster_scored_items(scored_items: list[dict[str, Any]]) -> list[list[dict[s
 # ---------- LLM batch ----------
 
 def score_batch(
-    client: DeepSeekClient, model: str, batch: list[dict[str, Any]]
+    client: DeepSeekClient, model: str, batch: list[dict[str, Any]], system_prompt: str
 ) -> tuple[dict[str, dict[str, Any]], dict[str, int]]:
     """对一批 items 调一次 LLM，返回 (id → score dict, usage dict)。"""
     user_msg = build_user_message(batch)
     resp = client.chat(
         model=model,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_msg},
         ],
         response_format={"type": "json_object"},
@@ -411,6 +412,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     load_dotenv()
+    profile = load_profile()
+    system_prompt = build_system_prompt(profile)
     client = DeepSeekClient.from_env()
 
     date = args.date or latest_raw_date()
@@ -457,7 +460,7 @@ def main(argv: list[str] | None = None) -> int:
     failed_batches = 0
     for i, batch in enumerate(batches, 1):
         try:
-            by_id, usage = score_batch(client, args.model, batch)
+            by_id, usage = score_batch(client, args.model, batch, system_prompt)
             all_scores.update(by_id)
             total_prompt_tokens += usage["prompt_tokens"]
             total_completion_tokens += usage["completion_tokens"]

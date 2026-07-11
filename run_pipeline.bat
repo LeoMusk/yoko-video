@@ -1,4 +1,4 @@
 @echo off
-REM yoko-video 一键管道入口 —— 双击运行
+REM Backward-compatible alias. Prefer run_news.bat / run_all.bat.
 powershell -ExecutionPolicy Bypass -File "%~dp0run_pipeline.ps1"
 pause

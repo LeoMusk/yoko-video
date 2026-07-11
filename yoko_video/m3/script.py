@@ -19,9 +19,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from ..profile import load_profile
 from ..m2.env import load_dotenv
 from ..m2.llm import DeepSeekClient, extract_content, usage_of
-from .prompt import SYSTEM_PROMPT, build_user_message
+from .prompt import build_system_prompt, build_user_message
 
 
 SCORED_DIR = Path("data/scored")
@@ -60,14 +61,18 @@ def _find_cliche(script: dict[str, Any]) -> str | None:
 
 
 def generate_script(
-    client: DeepSeekClient, model: str, item: dict[str, Any], max_retries: int = 2
+    client: DeepSeekClient,
+    model: str,
+    item: dict[str, Any],
+    system_prompt: str,
+    max_retries: int = 2,
 ) -> tuple[dict[str, Any], dict[str, int]]:
     """生成脚本；若命中 AI 腔套路则降温重试，最多 max_retries 次。"""
     user_msg = build_user_message(item)
     last: tuple[dict[str, Any], dict[str, int]] | None = None
     for attempt in range(max_retries + 1):
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_msg},
         ]
         if attempt > 0:
@@ -128,8 +133,9 @@ def render_scripts(date: str, scripts: list[tuple[dict[str, Any], dict[str, Any]
             lines.append(f"- {kp}")
         lines.append("")
 
-        lines.append("### yoko 观点（差异化灵魂）")
-        lines.append(s.get("yoko_take", ""))
+        creator_take = s.get("creator_take") or s.get("yoko_take") or ""
+        lines.append("### 创作者观点（差异化灵魂）")
+        lines.append(creator_take)
         lines.append("")
 
         lines.append("### 引流 CTA")
@@ -162,6 +168,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     load_dotenv()
+    profile = load_profile()
+    system_prompt = build_system_prompt(profile)
     client = DeepSeekClient.from_env()
 
     date = args.date or latest_scored_date()
@@ -191,7 +199,7 @@ def main(argv: list[str] | None = None) -> int:
         title = (it.get("title") or "")[:40]
         print(f"  生成中: {title} ...", end="", flush=True)
         try:
-            script, usage = generate_script(client, args.model, it)
+            script, usage = generate_script(client, args.model, it, system_prompt)
             results.append((it, script))
             tot_in += usage["prompt_tokens"]
             tot_out += usage["completion_tokens"]
@@ -217,7 +225,8 @@ def main(argv: list[str] | None = None) -> int:
                 "hook": s.get("hook", ""),
                 "data_points": s.get("data_points", []),
                 "key_points": s.get("key_points", []),
-                "yoko_take": s.get("yoko_take", ""),
+                "creator_take": s.get("creator_take") or s.get("yoko_take", ""),
+                "yoko_take": s.get("creator_take") or s.get("yoko_take", ""),
                 "cta": s.get("cta", ""),
                 "voiceover": s.get("voiceover", ""),
                 "visual_cues": s.get("visual_cues", []),

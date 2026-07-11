@@ -1,28 +1,41 @@
-"""M2 评分 prompt 模板。
-
-基于 user-profile + project-scope：
-- yoko 是中文 AI/科技短视频创作者，几万粉丝
-- 内容线：AI 产品/工具/模型动态/创业/技能
-- 形态：60-180s 数字人口播 + 30-90s PPT 信息流
-- 变现：引流到 AI 私域助理产品
-"""
+"""M2 评分 prompt 模板。"""
 from __future__ import annotations
 
 import json
 from typing import Any
 
+from ..profile import CreatorProfile, load_profile
 
-SYSTEM_PROMPT = """你是 yoko 的 AI 选题编辑助手。yoko 是一个中文 AI/科技短视频创作者（几万粉丝），主做下面这些线：
-- AI 新产品 / 新工具 / 新模型动态
-- 头部 AI 公司动态（OpenAI、Anthropic、Google、Meta、字节、阿里、DeepSeek 等）
-- AI 创业 / AI 投融资
-- AI 实用技能 / AI 教程 / Prompt Engineering
-- AI 行业商业判断
 
-内容形态：抖音 / 视频号 / YouTube Shorts，60-180s 数字人口播或 30-90s PPT 信息流。
-变现路径：通过视频引流到自己的 AI 私域助理产品。
+CATEGORY_ENUM = {
+    "AI产品发布", "头部模型动态", "AI开源工具", "头部公司动态",
+    "AI论文研究", "AI创业投融资", "AI实用技能", "AI行业商业",
+    "AI政策合规", "非AI",
+}
 
-你的任务：对一批原始信息条目按 yoko 的口味打分，决定哪些适合做今日选题。
+
+def _bullets(items: list[str]) -> str:
+    return "\n".join(f"- {item}" for item in items)
+
+
+def build_system_prompt(profile: CreatorProfile | None = None) -> str:
+    p = profile or load_profile()
+    platforms = " / ".join(p.platforms)
+    formats = " 或 ".join(p.video_formats)
+    content_lines = _bullets(p.content_lines)
+
+    return f"""你是{p.creator_name}的 AI 选题编辑助手。{p.creator_name}是一个{p.role}。
+
+账号受众：{p.audience}
+
+主要内容线：
+{content_lines}
+
+内容平台：{platforms}。
+视频形态：{formats}。
+变现路径：{p.monetization}
+
+你的任务：对一批原始信息条目按这个账号的口味打分，决定哪些适合做今日选题。
 
 【评分维度（每条都必须给出，不能省略，按以下 schema）】
 
@@ -40,17 +53,17 @@ SYSTEM_PROMPT = """你是 yoko 的 AI 选题编辑助手。yoko 是一个中文 
   * "非AI"          — 与 AI 无关：金融、财经、IPO（非AI公司）、消费品、纯硬件、地缘政治等
 - importance (int, 1-10): 在 AI 圈子里的话题重要性。Anthropic/OpenAI 发新模型 = 10；某厂家更新 SDK = 5；个人博客感想 = 3。
 - video_fit (int, 1-10): 适合做成中文短视频的程度。事件性/争议性/数字冲击大 = 高；纯学术理论/财报数字 = 低。
-- audience_fit (int, 1-10): 贴合 yoko 受众（AI/科技 + AI创业者 + 技能学习者）的程度。
+- audience_fit (int, 1-10): 贴合账号受众（{p.audience}）的程度。
 - one_liner (str, ≤30 中文字符): 一句话核心信息（中文，要有信息量，不是标题翻译）。
 - chinese_angle (str, ≤50 中文字符): 中文短视频可以切入的角度（钩子/争议点/价值点/拍摄思路）。如果不适合做视频可写"不建议做视频"。
 
 【输出严格 JSON】
 
-{
+{{
   "scores": [
-    {"id": "<原始id>", "is_ad": false, "category": "...", "importance": 8, "video_fit": 9, "audience_fit": 8, "one_liner": "...", "chinese_angle": "..."}
+    {{"id": "<原始id>", "is_ad": false, "category": "...", "importance": 8, "video_fit": 9, "audience_fit": 8, "one_liner": "...", "chinese_angle": "..."}}
   ]
-}
+}}
 
 【video_fit 严格门槛（所有类别通用，尤其 paper / 学术类）】
 
@@ -67,6 +80,9 @@ video_fit ≥ 7 必须具备以下之一，否则给 ≤ 5：
 3. category 必须从枚举里选，不能自创。
 4. 即使一条明显是广告或非AI也要打分（importance/video_fit 给低分即可），不要省略。
 """
+
+
+SYSTEM_PROMPT = build_system_prompt()
 
 
 def build_user_message(batch: list[dict[str, Any]]) -> str:
@@ -91,10 +107,3 @@ def build_user_message(batch: list[dict[str, Any]]) -> str:
         f"每条 id 与输入一一对应。\n\n"
         f"```json\n{json.dumps(payload, ensure_ascii=False)}\n```"
     )
-
-
-CATEGORY_ENUM = {
-    "AI产品发布", "头部模型动态", "AI开源工具", "头部公司动态",
-    "AI论文研究", "AI创业投融资", "AI实用技能", "AI行业商业",
-    "AI政策合规", "非AI",
-}

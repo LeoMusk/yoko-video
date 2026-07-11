@@ -1,0 +1,33 @@
+{
+  "date": "2026-06-20",
+  "scripts": [
+    {
+      "title_caption": "AI 开始接管网页后台",
+      "hook": "一个新的企业级 Agent，已经能自己打开网页、填表、留下审计记录。",
+      "data_points": [],
+      "key_points": [
+        "它瞄准的是企业后台里的重复网页操作",
+        "重点不是自动点击，而是可追溯的人机协作",
+        "这类 Agent 会先从低风险流程开始落地"
+      ],
+      "creator_take": "我更关心它的审计记录。如果企业敢用 Agent，第一步一定是让人能追责、能回看。",
+      "yoko_take": "我更关心它的审计记录。如果企业敢用 Agent，第一步一定是让人能追责、能回看。",
+      "cta": "如果你想每天追这种 AI 产品变化，可以用自己的信息助理先把重点筛出来。",
+      "voiceover": "兄弟们，一个新的企业级 Agent，已经能自己打开网页、填表、留下审计记录。这个方向很值得看。因为企业后台里有大量重复操作，不难，但是烦，而且容易出错。真正关键的不是它会不会点按钮，而是出了问题能不能追溯。谁让它点的、点了什么、结果是什么，都要留下记录。我判断这类 Agent 会先从低风险流程开始落地，比如资料整理、内部系统填报、报表初稿。想每天追这种 AI 产品变化，可以用自己的信息助理先把重点筛出来。",
+      "visual_cues": [
+        "浏览器后台操作示意",
+        "表单自动填写动画",
+        "审计日志卡片",
+        "人类确认按钮"
+      ],
+      "duration_sec": 75,
+      "meta": {
+        "title": "ExampleAI releases a browser-use agent for enterprise workflows",
+        "source": "example-ai-feed",
+        "url": "https://example.com/example-ai-agent",
+        "category": "AI产品发布",
+        "final": 8.2
+      }
+    }
+  ]
+}

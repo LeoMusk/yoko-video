@@ -24,7 +24,7 @@ from playwright.sync_api import sync_playwright
 
 DEFAULT_WIDTH = 1080
 DEFAULT_HEIGHT = 1440
-DEFAULT_BRAND = "@YokoAI"
+DEFAULT_BRAND = "@你的账号"
 DEFAULT_THEME = "yoko-clean"
 
 PAGEBREAK_MARKERS = {"<!-- pagebreak -->", "<!--pagebreak-->", "---PAGE---", "[pagebreak]"}

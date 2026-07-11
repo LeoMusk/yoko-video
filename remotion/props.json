@@ -1,42 +1,41 @@
 {
-  "title_caption": "AGI完成80%，人类注意力却成了瓶颈？",
-  "hook": "OpenAI总裁说AGI已经完成了80%，但人类注意力成了新的瓶颈。",
+  "title_caption": "AI 行业资讯，自动变成短视频选题",
+  "hook": "每天 AI 新闻太多，可以先让工具帮你筛掉低价值信息。",
   "data_points": [
     {
-      "value": "80%",
-      "label": "AGI完成度"
+      "value": "2-3天",
+      "label": "默认资讯窗口"
     },
     {
-      "value": "80%",
-      "label": "AI写代码占比"
+      "value": "Top 40",
+      "label": "默认简报候选"
     },
     {
-      "value": "10万",
-      "label": "可管理Agent数"
+      "value": "JSON",
+      "label": "可交给 Agent 视频化"
     }
   ],
   "key_points": [
-    "AGI完成80%，但人类注意力成为稀缺资源",
-    "AI写代码从20%暴涨到80%，开发效率飙升",
-    "未来一人管理10万个AI代理，组织形态变革"
+    "M1 自动采集最近几天的 AI 资讯",
+    "M2 用 LLM 做选题评分和中文视频角度",
+    "M3 把高价值选题生成口播脚本和画面建议"
   ],
-  "yoko_take": "注意力成为瓶颈这个点很实在。AI再强，人一天就24小时，学会筛选和委托是核心能力。",
-  "cta": "想持续跟进这种一手AI动态，又没时间自己刷？我做了个AI私域助理，每天帮你精选关键信息，省下注意力。",
-  "voiceover": "兄弟们，OpenAI总裁Greg Brockman出来聊天了。他说AGI已经完成了80%，但人类注意力变成了新的瓶颈。什么意思？就是AI再强，你一天也只有24小时，什么事该你亲自盯，什么事可以交给AI，这个判断能力反而成了稀缺资源。他还透露，去年12月AI只写了20%的代码，现在这个数字到了80%。开发效率飞涨，但人类工程师的角色从写代码变成了审核和决策。更夸张的是，他说未来可能一个人管理10万个AI代理，组织形态彻底改变。对我们搞AI的来说，这意味着：工具不是问题，注意力分配才是。想持续追这种一手动态，又怕信息过载？我做了个AI私域助理，每天帮你筛关键信息，把注意力花在刀刃上。",
+  "creator_take": "这个模板只是示例。实际使用时，请先运行 M1/M2/M3，再用 scripts/script_to_remotion_props.py 生成新的 props.json。",
+  "yoko_take": "这个模板只是示例。实际使用时，请先运行 M1/M2/M3，再用 scripts/script_to_remotion_props.py 生成新的 props.json。",
+  "cta": "把 profile.json 改成你的账号定位，再生成适合自己风格的脚本。",
+  "voiceover": "每天 AI 新闻太多，可以先让工具帮你筛掉低价值信息。这个项目会先采集最近几天的 AI 资讯，再用 LLM 做选题评分，最后把值得讲的内容生成短视频脚本。你可以直接看 Markdown 简报，也可以把 JSON 交给 Codex 或 Claude Code 做视频化。",
   "visual_cues": [
-    "Greg Brockman访谈截图",
-    "AGI进度条从0到80%动画",
-    "AI写代码比例从20%到80%动态图表",
-    "人类注意力瓶颈概念图（沙漏/漏斗）",
-    "10万Agent集群示意图",
-    "AI私域助理产品界面示意"
+    "AI 资讯流快速滚动",
+    "选题评分表",
+    "短视频脚本卡片",
+    "Remotion 信息流模板"
   ],
-  "duration_sec": 90,
+  "duration_sec": 60,
   "meta": {
-    "title": "OpenAI's Greg Brockman: Why Human Attention Is the New Bottleneck",
-    "source": "training-data",
-    "url": "",
-    "category": "头部公司动态",
-    "final": 9.0
+    "title": "Public sample props",
+    "source": "example",
+    "url": "https://example.com",
+    "category": "项目示例",
+    "final": 8.0
   }
 }
